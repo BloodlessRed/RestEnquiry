@@ -20,21 +20,15 @@ import java.util.Optional;
 @SpringBootApplication
 @RestController
 @RequestMapping(path = "/mainApplication")
-public class MainClass {
+public class MainClass implements CarController {
 
     @Autowired
     private JdbcTemplate jdbcTemplate;
 
     private static Logger log = LoggerFactory.getLogger(MainClass.class);
 
-    ArrayList<Car> listOfCars = new ArrayList<Car>();
-
-//    public Car[] listOfCarsToArray() {
-//        Car[] arrayOfCars = listOfCars.toArray(new Car[listOfCars.size()]);
-//        return arrayOfCars;
-//    }
-
-    public Car extractionFromDataBase(Car car) {
+    @Override
+    public Car extractionFromDataBase(@Valid Car car) {
 
         return jdbcTemplate.queryForObject(
                 "select * from cars where id = ?",
@@ -52,6 +46,7 @@ public class MainClass {
 
     }
 
+    @Override
     public Car extractionFromDataBase(int id) {
 
         return jdbcTemplate.queryForObject(
@@ -67,8 +62,8 @@ public class MainClass {
         );
 
     }
-
-    Car createCar(int id, String carType, boolean isNew, int driverId) {
+    @Override
+    public Car createCar(int id, String carType, boolean isNew, int driverId) {
 
         return new Car(id, carType, isNew, driverId);
     }
@@ -78,7 +73,7 @@ public class MainClass {
         SpringApplication.run(MainClass.class, args);
 
     }
-
+    @Override
     @GetMapping("/getCars")
     public List<Car> getCar() {
 
@@ -94,7 +89,7 @@ public class MainClass {
         );
 
     }
-
+    @Override
     @PostMapping("/createCar")
     public ResponseEntity addCar(@Valid @RequestBody Car car) {
 
@@ -102,40 +97,28 @@ public class MainClass {
 
         jdbcTemplate.update("insert into cars (carType, isNew) values (?,?)", car.getCarType(), car.isNew());
 
-//            listOfCars.add(car);
-
         return ResponseEntity.ok("A new car was added");
 
-
-//            return ResponseEntity.status(409).build();
-
     }
-
+    @Override
     @PutMapping(path = "/edit")
     public ResponseEntity editCar(@Valid @RequestBody Car car) {
 
-//        for (Car currentCar : listOfCarsToArray()) {
-//            if (currentCar.getId() == car.getId()) {
-//                listOfCars.remove(currentCar);
-//                listOfCars.add(car);
-//                return ResponseEntity.ok("This car was modified");
-//            }
-//        }
         Car currentCar = extractionFromDataBase(car);
 
-        if(currentCar.getId() == car.getId()){
+        if (currentCar.getId() == car.getId()) {
 
             jdbcTemplate.update("update cars set carType = ?, isNew = ? where id = ?", car.getCarType(), car.isNew(), car.getId());
             return ResponseEntity.ok("This car was modified");
 
-        }else {
+        } else {
 
             return ResponseEntity.notFound().build();
         }
 
     }
 
-
+    @Override
     @PatchMapping(path = "/patchType")
     public ResponseEntity patchCar(@Valid @RequestBody Car car) {
 
@@ -157,19 +140,24 @@ public class MainClass {
         }
         return ResponseEntity.notFound().build();
     }
-
+    @Override
     @DeleteMapping(value = "/{id}")
     public ResponseEntity deleteCar(@PathVariable int id) {
 
-//        for (Car currentCar : listOfCarsToArray()) {
-//            if (currentCar.getId() == id) {
-//                listOfCars.remove(currentCar);
-//                return ResponseEntity.ok("successfully deleted requested item");
-//            }
-//        }
-//        return ResponseEntity.notFound().build();
-        jdbcTemplate.update("delete cars where id = ?", id);
-        return ResponseEntity.ok("successfully deleted requested item");
+        Car currentCar = extractionFromDataBase(id);
+
+        if (currentCar.getId() == id){
+
+            jdbcTemplate.update("delete cars where id = ?", id);
+
+            return ResponseEntity.ok("successfully deleted requested item");
+
+        }else {
+
+            return ResponseEntity.notFound().build();
+
+        }
+
     }
 
 }

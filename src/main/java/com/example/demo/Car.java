@@ -15,7 +15,7 @@ public class Car {
     @NotBlank(message = "Name is mandatory")
     private String carType;
 
-    @NotBlank(message = "Novelty is mandatory")
+    @NotBlank(message = "Novelty of car is mandatory")
     private boolean isNew;
 
     @NotBlank(message = "Driver's id is mandatory")
