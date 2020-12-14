@@ -1,13 +1,25 @@
 package com.example.demo;
 
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+import javax.validation.constraints.Min;
+import javax.validation.constraints.Size;
+
+@Entity
 public class Driver {
 
+    @Id
+    @GeneratedValue
     private int id;
 
+    @Size(min = 2)
     private String name;
 
+    @Size(min = 1)
     private char type;
 
+    @Min(value = 1)
     private int carId;
 
     public Driver(int id, String name, char type, int carId){
@@ -21,6 +33,7 @@ public class Driver {
         setCarId(carId);
     }
 
+    public Driver(){}
     public int getId() {
         return id;
     }

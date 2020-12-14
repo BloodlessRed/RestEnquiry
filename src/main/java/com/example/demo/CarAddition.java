@@ -4,11 +4,7 @@ import org.springframework.http.ResponseEntity;
 
 import java.util.List;
 
-public interface CarController {
-
-    Car extractionFromDataBase(Car car);
-
-    Car extractionFromDataBase(int id);
+public interface CarAddition {
 
     Car createCar(int id, String carType, boolean isNew, int driverId);
 

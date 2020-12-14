@@ -1,9 +1,9 @@
 package com.example.demo;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.validation.constraints.NotBlank;
+import javax.persistence.*;
+import javax.validation.constraints.Min;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 
 @Entity
 public class Car {
@@ -12,13 +12,13 @@ public class Car {
     @GeneratedValue
     private int id;
 
-    @NotBlank(message = "Name is mandatory")
+    @Size(min = 1, max = 16)
     private String carType;
 
-    @NotBlank(message = "Novelty of car is mandatory")
+    @NotNull
     private boolean isNew;
 
-    @NotBlank(message = "Driver's id is mandatory")
+    @Min(value = 1)
     private int driverId;
 
     public Car(int id, String carType, boolean isNew, int driverId){
@@ -33,11 +33,13 @@ public class Car {
 
     }
 
+    public Car(){}
+
     public int getId() {
         return id;
     }
 
-    public void setId(int id) {
+    private void setId(int id) {
         this.id = id;
     }
 
