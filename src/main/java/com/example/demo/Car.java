@@ -10,7 +10,7 @@ import javax.validation.constraints.Size;
 public class Car {
 
     @Id
-    @GeneratedValue (strategy = GenerationType.IDENTITY)
+    @GeneratedValue
     private int id;
 
     @Size(min = 1, max = 16)
