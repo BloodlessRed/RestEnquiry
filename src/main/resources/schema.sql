@@ -3,9 +3,9 @@ DROP TABLE IF EXISTS Drivers;
 
 CREATE TABLE Car (
   id INT AUTO_INCREMENT  PRIMARY KEY,
-  carType VARCHAR(250) NOT NULL,
-  isNew NUMBER(1) NOT NULL,
-  driverId INT
+  car_Type VARCHAR(250) NOT NULL,
+  is_New NUMBER(1) NOT NULL,
+  driver_Id INT
 );
 
 CREATE TABLE Driver (
@@ -13,5 +13,5 @@ CREATE TABLE Driver (
     id INT AUTO_INCREMENT PRIMARY KEY,
     name VARCHAR(250) NOT NULL,
     type CHAR(1) NOT NULL,
-    carId INT
+    car_Id INT
 );
