@@ -7,7 +7,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -18,49 +17,10 @@ import java.util.List;
 @RequestMapping(path = "/mainApplication")
 public class CarController implements CarAddition {
 
-//    @Autowired
-//    private JdbcTemplate jdbcTemplate;
-
     @Autowired
     private CarRepository carRepository;
 
     private static Logger log = LoggerFactory.getLogger(com.example.demo.controller.CarController.class);
-
-//    @Override
-//    public Car extractionFromDataBase(@Valid Car car) {
-//
-//        return jdbcTemplate.queryForObject(
-//                "select * from cars where id = ?",
-//                new Object[]{car.getId()},
-//                (rs, rowNum) ->
-//
-//                        createCar(
-//                                rs.getInt("id"),
-//                                rs.getString("carType"),
-//                                rs.getBoolean("isNew"),
-//                                rs.getInt("driverId")
-//                        )
-//
-//        );
-//
-//    }
-
-//    @Override
-//    public Car extractionFromDataBase(int id) {
-//
-//        return jdbcTemplate.queryForObject(
-//                "select * from cars where id = ?",
-//                new Object[]{id},
-//                (rs, rowNum) ->
-//                        createCar(
-//                                rs.getInt("id"),
-//                                rs.getString("carType"),
-//                                rs.getBoolean("isNew"),
-//                                rs.getInt("driverId")
-//                        )
-//        );
-//
-//    }
 
     @Override
     public Car createCar(int id, String carType, boolean isNew, int driverId) {
@@ -72,17 +32,7 @@ public class CarController implements CarAddition {
     @GetMapping("/getCars")
     public List<Car> getCar() {
 
-//        return jdbcTemplate.query(
-//                "select * from cars",
-//                (rs, rowNum) ->
-//                        createCar(
-//                                rs.getInt("id"),
-//                                rs.getString("carType"),
-//                                rs.getBoolean("isNew"),
-//                                rs.getInt("driverId")
-//                        )
-//        );
-            return carRepository.findAll();
+        return carRepository.findAll();
     }
 
     @Override
@@ -90,8 +40,6 @@ public class CarController implements CarAddition {
     public ResponseEntity addCar(@Valid @RequestBody Car car) {
 
         log.info("We are adding " + car.getCarType() + " and this car " + (car.isNew() ? "is new" : "is not new"));
-
-//        jdbcTemplate.update("insert into cars (carType, isNew) values (?,?)", car.getCarType(), car.isNew());
 
         carRepository.save(car);
 
@@ -103,11 +51,12 @@ public class CarController implements CarAddition {
     @PutMapping(path = "/edit")
     public ResponseEntity editCar(@Valid @RequestBody Car car) {
 
+        log.info("We have edited the car with id: " + car.getId());
+
         Car currentCar = carRepository.findById(car.getId());
 
         if (currentCar.getId() == car.getId()) {
 
-//            jdbcTemplate.update("update cars set carType = ?, isNew = ? where id = ?", car.getCarType(), car.isNew(), car.getId());
             carRepository.save(car);
 
             return ResponseEntity.ok("This car was modified");
@@ -121,33 +70,34 @@ public class CarController implements CarAddition {
 
     @Override
     @PatchMapping(path = "/patchType")
-    public ResponseEntity patchCar(@RequestBody Car car) {
+    public ResponseEntity patchCar(@Valid @RequestBody Car car) {
 
         Car currentCar = carRepository.findById(car.getId());
+
+        if (currentCar == null) {
+            return ResponseEntity.notFound().build();
+        }
 
         if (currentCar.getId() == car.getId()) {
             if (car.getCarType() != null && !currentCar.getCarType().equals(car.getCarType())) {
 
-//                jdbcTemplate.update("update cars set carType = ? where id = ?", car.getCarType(), car.getId());
                 currentCar.setCarType(car.getCarType());
 
-                carRepository.save(currentCar);
             }
-            if (currentCar.isNew() != car.isNew()) {
 
-//                jdbcTemplate.update("update cars set isNew = ? where id = ?", car.isNew(), car.getId());
+            if (currentCar.isNew() != car.isNew()) {
 
                 currentCar.setNew(car.isNew());
 
-                carRepository.save(currentCar);
             }
 
-            if (currentCar.getDriverId() != car.getDriverId()){
+            if (currentCar.getDriverId() != car.getDriverId()) {
 
                 currentCar.setDriverId(car.getDriverId());
 
-                carRepository.save(currentCar);
             }
+
+            carRepository.save(currentCar);
 
             return ResponseEntity.ok("This car was modified");
         }
@@ -163,7 +113,6 @@ public class CarController implements CarAddition {
 
         if (currentCar.getId() == id) {
 
-//            jdbcTemplate.update("delete cars where id = ?", id);
             carRepository.deleteById(id);
 
             return ResponseEntity.ok("successfully deleted requested item");

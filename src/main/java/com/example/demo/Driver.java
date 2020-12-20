@@ -1,5 +1,7 @@
 package com.example.demo;
 
+import org.hibernate.validator.constraints.Range;
+
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
@@ -19,7 +21,7 @@ public class Driver {
     @Size(min = 1)
     private char type;
 
-    @Min(value = 1)
+    @Range(min = 1)
     private int carId;
 
     public Driver(int id, String name, char type, int carId){
@@ -34,6 +36,7 @@ public class Driver {
     }
 
     public Driver(){}
+
     public int getId() {
         return id;
     }

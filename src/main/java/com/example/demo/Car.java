@@ -1,12 +1,13 @@
 package com.example.demo;
 
+import org.hibernate.validator.constraints.Range;
+
 import javax.persistence.*;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
 @Entity
-@Table
 public class Car {
 
     @Id
@@ -19,7 +20,7 @@ public class Car {
     @NotNull
     private boolean isNew;
 
-    @Min(value = 1)
+    @Range(min = 1)
     private int driverId;
 
     public Car(int id, String carType, boolean isNew, int driverId){

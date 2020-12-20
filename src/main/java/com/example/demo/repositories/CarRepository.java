@@ -14,8 +14,4 @@ public interface CarRepository extends CrudRepository<Car, Integer> {
 
     Car findById(int id);
 
-    @Override
-    Car save (Car car);
-
-    void deleteById(int id);
 }
